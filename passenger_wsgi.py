@@ -11,8 +11,8 @@ app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 
 class spotify_data():
     def __init__(self,name):
-        os.environ['SPOTIPY_CLIENT_ID'] = 'b0f9df05edf246f6b7c4bcf0aa500232'  
-        os.environ['SPOTIPY_CLIENT_SECRET'] = '8c344c1fc91f4842bf108829aeeeeafd'
+        os.environ['SPOTIPY_CLIENT_ID'] = '<spotify-client-id>'  
+        os.environ['SPOTIPY_CLIENT_SECRET'] = '<spotify-client-secret>'
         search_str = name
         sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
         self.result = sp.search(search_str,5)
