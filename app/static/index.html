@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+      * {
+         box-sizing:border-box;
+        -webkit-box-sizing:border-box;
+        -ms-box-sizing:border-box;
+        -moz-box-sizing:border-box;
+      }
+      .track_item img{
+        float:left;
+        width:10%;
+        max-width: 60px;
+      }
+      .search_outer{
+          position: relative;
+          margin-top:20px;
+      }
+      .search_outer [name="search"]{
+        height:30px;
+        width:100%;
+        padding:10px 10px;
+      }
+      #songList{
+        border:1px solid #c3c3c3;
+
+        position: absolute;
+        z-index: 2;
+        top: 40px;
+        background-color: #f7f7f7;
+        width:100%;
+        max-height: 160px;
+        overflow-y: scroll;
+
+        display:none;
+      }
+      .track_item{
+        display: inline-block;
+        width: 100%;
+        border-bottom:1px solid #c3c3c3;
+        padding:10px 20px;
+        cursor:pointer;
+        transition:all 0.3s;
+      }
+      .track_item:hover{
+        background-color:#e2e2e2;
+      }
+      .track_item:last-child{
+        border:none;
+      }
+      .track_item .track_item_title{
+        font-size:20px;
+        margin: 0;
+        font-weight:bold;
+      }
+      .track_item .track_item_artist{
+        font-size: 14px;
+        margin: 0;
+        padding-top:10px;
+
+      }
+      .track_item .track_item_details{
+        float:left;
+        width:90%;
+        padding-left:20px;
+      }
+
+      #render_design{
+        border:2px solid #e4e4e4;
+        max-width:300px;
+        margin:auto;
+        padding:30px 0;
+      }
+      #render_design .track_render_image{
+        width:100%;
+        padding:0 50px;
+      }
+      #render_design .track_render_details{
+        text-align:left;
+        padding:10px 25px 0px 25px;
+      }
+      #render_design .track_render_title{
+        font-size:16px;
+        font-weight:bold;
+        text-transform:uppercase;
+        font-family:arial;
+        margin-top: 20px;
+        margin-bottom: 0;
+      }
+      #render_design .track_render_artist{
+        font-size:14px;
+        font-family:arial;
+        margin-top: 5px;
+        margin-bottom: 0;
+      }
+      #render_design .track_render_controls{
+        width:100%;
+        padding-top:20px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+
+
+    <div id="render_design">
+        <img class="track_render_image" src="/pythonappserverside/?key=static&path=Example-Art.jpg">
+        <div class="track_render_details">
+          <p class="track_render_title">Song Title</p>
+          <p class="track_render_artist">Artists Name</p>
+          <img class="track_render_controls" src="/pythonappserverside/?key=static&path=controls.webp">
+        </div>
+    </div>
+
+    <div class="search_outer">
+      <input type="text" name="search" value="" placeholder="Search a song" id="search">
+      <div id="songList">
+
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+      var curSearchJSON = [];
+      $("#search").keypress(function(){
+        var search = $(this).val();
+        $.get("/pythonappserverside/?key=search&search="+search, function(data, status){
+           curSearchJSON = JSON.parse(data);
+           $("#songList").html("");
+           $.each(curSearchJSON, function(i, item) {
+             $("#songList").append('<div class="track_item" data-track-id="'+item['id']+'"> <img src="'+item['cover_img']+'"> <div class="track_item_details"> <p class="track_item_title">'+item['name']+'</p><p class="track_item_artist">'+item['artist']+'</p></div></div>');
+           });
+           $("#songList").slideDown();
+         });
+      });
+
+      $(document).on( "click", ".track_item", function() {
+        var trackId = $(this).attr("data-track-id");
+        $(".track_render_image").attr("src",curSearchJSON[trackId]['cover_img']);
+        $(".track_render_title").text(curSearchJSON[trackId]['name']);
+        $(".track_render_artist").text(curSearchJSON[trackId]['artist']);
+      });
+
+    </script>
+  </body>
+</html>
